@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(pick_ik)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
-    add_compile_options(-Werror -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion -Wold-style-cast)
+    add_compile_options(-Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion -Wold-style-cast)
 endif()
 
 find_package(ament_cmake REQUIRED)
@@ -35,7 +35,7 @@ add_library(pick_ik_plugin SHARED
 target_compile_features(pick_ik_plugin PUBLIC c_std_99 cxx_std_17)
 target_include_directories(pick_ik_plugin PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+  $<INSTALL_INTERFACE:include/pick_ik>)
 target_link_libraries(pick_ik_plugin
   PUBLIC
     moveit_core::moveit_robot_model
@@ -64,7 +64,7 @@ endif()
 
 install(
   DIRECTORY include/
-  DESTINATION include
+  DESTINATION include/pick_ik
 )
 install(
   TARGETS pick_ik_plugin pick_ik_parameters
@@ -72,7 +72,6 @@ install(
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
 )
 
 ament_export_targets(export_pick_ik HAS_LIBRARY_TARGET)
