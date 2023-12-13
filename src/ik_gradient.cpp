@@ -25,7 +25,6 @@ auto step(GradientIk& self, Robot const& robot, CostFn const& cost_fn, double st
     auto const count = self.local.size();
 
     // compute gradient direction
-    self.working = self.local;
     for (size_t i = 0; i < count; ++i) {
         // test negative displacement
         self.working[i] = self.local[i] - step_size;
@@ -55,8 +54,6 @@ auto step(GradientIk& self, Robot const& robot, CostFn const& cost_fn, double st
                    [&](auto value) { return value * f; });
 
     // initialize line search
-    self.working = self.local;
-
     for (size_t i = 0; i < count; ++i) {
         self.working[i] = self.local[i] - self.gradient[i];
     }
@@ -78,9 +75,9 @@ auto step(GradientIk& self, Robot const& robot, CostFn const& cost_fn, double st
     // apply optimization step
     // (move along gradient direction by estimated step size)
     for (size_t i = 0; i < count; ++i) {
-        self.working[i] = std::clamp(self.local[i] - self.gradient[i] * joint_diff,
-                                     robot.variables[i].clip_min,
-                                     robot.variables[i].clip_max);
+        auto const& var = robot.variables[i];
+        auto updated_value = self.local[i] - self.gradient[i] * joint_diff;
+        self.working[i] = var.clamp_to_limits(updated_value);
     }
 
     // Always accept the solution and continue
@@ -102,7 +99,7 @@ auto ik_gradient(std::vector<double> const& initial_guess,
                  SolutionTestFn const& solution_fn,
                  GradientIkParams const& params,
                  bool approx_solution) -> std::optional<std::vector<double>> {
-    if (solution_fn(initial_guess)) {
+    if (params.stop_optimization_on_valid_solution && solution_fn(initial_guess)) {
         return initial_guess;
     }
 
@@ -118,7 +115,7 @@ auto ik_gradient(std::vector<double> const& initial_guess,
     while ((std::chrono::system_clock::now() < timeout_point) &&
            (num_iterations < params.max_iterations)) {
         if (step(ik, robot, cost_fn, params.step_size)) {
-            if (solution_fn(ik.best)) {
+            if (params.stop_optimization_on_valid_solution && solution_fn(ik.best)) {
                 return ik.best;
             }
         }
@@ -128,6 +125,10 @@ auto ik_gradient(std::vector<double> const& initial_guess,
         }
         previous_cost = ik.local_cost;
         num_iterations++;
+    }
+
+    if (!params.stop_optimization_on_valid_solution && solution_fn(ik.best)) {
+        return ik.best;
     }
 
     // If no solution was found, either return the approximate solution or nothing.
