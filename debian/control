@@ -1,0 +1,12 @@
+Source: ros-humble-pick-ik
+Section: misc
+Priority: optional
+Maintainer: Tyler Weaver <maybe@tylerjw.dev>
+Build-Depends: debhelper (>= 9.0.0), libfmt-dev, librange-v3-dev, ros-humble-ament-cmake-ros, ros-humble-generate-parameter-library, ros-humble-moveit-core, ros-humble-moveit-resources-panda-moveit-config <!nocheck>, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rsl, ros-humble-tf2-geometry-msgs, ros-humble-tf2-kdl, ros-humble-tl-expected, ros-humble-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-humble-pick-ik
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libfmt-dev, librange-v3-dev, ros-humble-generate-parameter-library, ros-humble-moveit-core, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rsl, ros-humble-tf2-geometry-msgs, ros-humble-tf2-kdl, ros-humble-tl-expected, ros-humble-ros-workspace
+Description: Inverse Kinematics solver for MoveIt
