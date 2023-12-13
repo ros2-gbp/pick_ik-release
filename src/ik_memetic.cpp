@@ -43,11 +43,8 @@ MemeticIk::MemeticIk(std::vector<double> const& initial_guess,
 bool MemeticIk::checkWipeout() {
     // Handle wipeouts if no progress is being made.
     if (previous_fitness_.has_value()) {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
         bool const improved =
-            (best_curr_.fitness < *previous_fitness_ - params_.wipeout_fitness_tol);
-#pragma GCC diagnostic pop
+            (best_curr_.fitness < previous_fitness_.value() - params_.wipeout_fitness_tol);
         if (!improved) {
             return true;
         }
@@ -101,10 +98,7 @@ void MemeticIk::initPopulation(Robot const& robot,
     for (size_t i = 0; i < params_.elite_size; ++i) {
         auto genotype = initial_guess;
         if (i > 0) {
-            for (size_t j_idx = 0; j_idx < robot.variables.size(); ++j_idx) {
-                auto const& var = robot.variables[j_idx];
-                genotype[j_idx] = rsl::uniform_real(var.clip_min, var.clip_max);
-            }
+            robot.set_random_valid_configuration(genotype);
         }
         population_[i] = Individual{genotype, cost_fn(genotype), 1.0, zero_grad};
     }
@@ -114,6 +108,10 @@ void MemeticIk::initPopulation(Robot const& robot,
         population_[i] = Individual{initial_guess, 0.0, 1.0, zero_grad};
     }
 
+    // Initialize fitnesses and extinctions
+    for (auto& individual : population_) {
+        individual.fitness = cost_fn(individual.genes);
+    }
     computeExtinctions();
     previous_fitness_.reset();
 }
@@ -158,11 +156,11 @@ void MemeticIk::reproduce(Robot const& robot, CostFn const& cost_fn) {
 
                 // Mutate
                 if (rsl::uniform_real(0.0, 1.0) < mutation_prob) {
-                    gene += extinction * joint.span * rsl::uniform_real(-0.5, 0.5);
+                    gene += extinction * joint.half_span * rsl::uniform_real(-1.0, 1.0);
                 }
 
                 // Clamp to valid joint values
-                gene = std::clamp(gene, joint.clip_min, joint.clip_max);
+                gene = robot.variables[j_idx].clamp_to_limits(gene);
 
                 // Approximate gradient
                 population_[i].gradient[j_idx] = gene - original_gene;
@@ -182,10 +180,7 @@ void MemeticIk::reproduce(Robot const& robot, CostFn const& cost_fn) {
 
         } else {
             // If the mating pool is empty, roll a new population member randomly.
-            for (size_t j_idx = 0; j_idx < robot.variables.size(); ++j_idx) {
-                auto const& var = robot.variables[j_idx];
-                population_[i].genes[j_idx] = rsl::uniform_real(var.clip_min, var.clip_max);
-            }
+            robot.set_random_valid_configuration(population_[i].genes);
             population_[i].fitness = cost_fn(population_[i].genes);
             for (auto& g : population_[i].gradient) {
                 g = 0.0;
@@ -232,8 +227,15 @@ auto ik_memetic_impl(std::vector<double> const& initial_guess,
         std::chrono::system_clock::now() + std::chrono::duration<double>(params.max_time);
     while ((std::chrono::system_clock::now() < timeout_point) && (iter < params.max_generations)) {
         // Do gradient descent on elites.
+        std::vector<std::thread> gd_threads;
+        gd_threads.reserve(ik.eliteCount());
         for (size_t i = 0; i < ik.eliteCount(); ++i) {
-            ik.gradientDescent(i, robot, cost_fn, params.gd_params);
+            gd_threads.push_back(std::thread([&ik, i, &robot, cost_fn, &params] {
+                ik.gradientDescent(i, robot, cost_fn, params.gd_params);
+            }));
+        }
+        for (auto& t : gd_threads) {
+            t.join();
         }
 
         // Perform mutation and recombination
@@ -247,7 +249,7 @@ auto ik_memetic_impl(std::vector<double> const& initial_guess,
         }
 
         // Check for termination and wipeout conditions
-        if (solution_fn(ik.best().genes)) {
+        if (params.stop_optimization_on_valid_solution && solution_fn(ik.best().genes)) {
             if (print_debug) fmt::print("Found solution!\n");
             return ik.best();
         }
@@ -263,6 +265,12 @@ auto ik_memetic_impl(std::vector<double> const& initial_guess,
         }
 
         iter++;
+    }
+
+    // If we kept optimizing, we need to check if we found a valid solution
+    if (!params.stop_optimization_on_valid_solution && solution_fn(ik.best().genes)) {
+        if (print_debug) fmt::print("Found solution!\n");
+        return ik.best();
     }
 
     if (approx_solution) {
@@ -282,7 +290,7 @@ auto ik_memetic(std::vector<double> const& initial_guess,
                 bool print_debug) -> std::optional<std::vector<double>> {
     // Check whether the initial guess already meets the goal,
     // before starting to solve.
-    if (solution_fn(initial_guess)) {
+    if (params.stop_optimization_on_valid_solution && solution_fn(initial_guess)) {
         return initial_guess;
     }
 
