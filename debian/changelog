@@ -1,0 +1,62 @@
+ros-humble-pick-ik (1.1.0-3jammy) jammy; urgency=high
+
+  * Support continuous (unbounded) joints properly (#59 <https://github.com/PickNikRobotics/pick_ik/pull/59>)
+  * Run elite gradient descent in separate threads (#61 <https://github.com/PickNikRobotics/pick_ik/pull/61>)
+  * Contributors: Sebastian Castro
+
+ -- Tyler Weaver <maybe@tylerjw.dev>  Wed, 13 Dec 2023 05:00:00 -0000
+
+ros-humble-pick-ik (1.0.2-3jammy) jammy; urgency=high
+
+  * New options to control solution quality and performance
+    
+    Option to rerun optimization until valid solution or timeout (#53)
+    
+    Option to keep optimizing after a valid solution was found (#46)
+    
+    Approximate solution cost threshold (#51) and joint jump threshold parameters (#42)
+    
+    Position scale parameter (#47)
+  * Fix ordering of joint limits when loading robot model (#54 <https://github.com/PickNikRobotics/pick_ik/pull/54>)
+  * Fix use of solution callback (#48 <https://github.com/PickNikRobotics/pick_ik/pull/48>)
+  * Remove unnecessary preprocessor macro (#40 <https://github.com/PickNikRobotics/pick_ik/pull/40>)
+  * Contributors: Marc Bestmann, Sebastian Castro, Erik Holum
+
+ -- Tyler Weaver <maybe@tylerjw.dev>  Tue, 25 Jul 2023 04:00:00 -0000
+
+ros-humble-pick-ik (1.0.1-3jammy) jammy; urgency=high
+
+  * Set Werror through CMake presets (#39 <https://github.com/PickNikRobotics/pick_ik/issues/39>)
+  * Replace lower_bounds with gt_eq (#37 <https://github.com/PickNikRobotics/pick_ik/issues/37>)
+  * Upgrade with new pkgs to fix issue with ROS
+  * Target include subdirectory
+  * Update Catch2 version to 3.3.0
+  * Fix overriding of package
+  * Fix orientation calculation in cost function and frame tests (#31)
+    
+    Fix orientation calculation
+    
+    Update plugin return values
+    
+    Remove redundant (and incorrect) joints bounds check
+    
+    Use Eigen angular distance calculation
+  * Small grammar fixes (#28 <https://github.com/PickNikRobotics/pick_ik/issues/28>)
+  * Contributors: Sebastian Castro, Stephanie Eng, Tyler Weaver
+
+ -- Tyler Weaver <maybe@tylerjw.dev>  Tue, 28 Mar 2023 04:00:00 -0000
+
+ros-humble-pick-ik (1.0.0-3jammy) jammy; urgency=high
+
+  * pick_ik inverse kinematics plugin compatible with MoveIt 2
+  * Numeric gradient descent (local) solver
+  * Memetic algorithm (global solver), configurable for single or multi-threading
+  * Basic goal functions: joint centering, avoid joint limits, minimal joint displacement
+  * Support for position-only IK and approximate solutions
+  * Dynamic parameter switching at runtime using generate_parameter_library <https://github.com/PickNikRobotics/generate_parameter_library>
+  * Docker devcontainer workflow for VSCode
+  * Contributors: Chris Thrasher, Sebastian Castro, Tyler Weaver
+
+ -- Tyler Weaver <maybe@tylerjw.dev>  Thu, 08 Dec 2022 05:00:00 -0000
+
+
