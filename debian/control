@@ -1,0 +1,12 @@
+Source: ros-rolling-pick-ik
+Section: misc
+Priority: optional
+Maintainer: Tyler Weaver <maybe@tylerjw.dev>
+Build-Depends: debhelper (>= 9.0.0), ament-cmake-ros, libfmt-dev, librange-v3-dev, libtf2-geometry-msgs-dev, libtf2-kdl-dev, pluginlib-dev, python3-tf2-geometry-msgs, python3-tf2-kdl, ros-rolling-generate-parameter-library, ros-rolling-moveit-core, ros-rolling-moveit-resources-panda-moveit-config <!nocheck>, ros-rolling-rclcpp, ros-rolling-rsl, ros-rolling-tl-expected, ros-rolling-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-rolling-pick-ik
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libfmt-dev, librange-v3-dev, libtf2-geometry-msgs-dev, libtf2-kdl-dev, pluginlib-dev, python3-tf2-geometry-msgs, python3-tf2-kdl, ros-rolling-generate-parameter-library, ros-rolling-moveit-core, ros-rolling-rclcpp, ros-rolling-rsl, ros-rolling-tl-expected, ros-rolling-ros-workspace
+Description: Inverse Kinematics solver for MoveIt
