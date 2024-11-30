@@ -1,3 +1,26 @@
+## pick_ik (humble) - 1.1.1-1
+
+The packages in the `pick_ik` repository were released into the `humble` distro by running `/usr/bin/bloom-release --rosdistro humble pick_ik` on `Sat, 30 Nov 2024 18:17:52 -0000`
+
+The `pick_ik` package was released.
+
+Version of package(s) in repository `pick_ik`:
+
+- upstream repository: https://github.com/PickNikRobotics/pick_ik.git
+- release repository: https://github.com/ros2-gbp/pick_ik-release.git
+- rosdistro version: `1.1.0-1`
+- old version: `1.1.0-3`
+- new version: `1.1.1-1`
+
+Versions of tools used:
+
+- bloom version: `0.12.0`
+- catkin_pkg version: `1.0.0`
+- rosdep version: `0.25.1`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## pick_ik (iron) - 1.1.0-2
 
 The packages in the `pick_ik` repository were released into the `iron` distro by running `/usr/bin/bloom-release pick_ik --rosdistro iron` on `Sun, 17 Dec 2023 15:27:03 -0000`
