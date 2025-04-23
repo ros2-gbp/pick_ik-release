@@ -1,0 +1,12 @@
+Source: ros-kilted-pick-ik
+Section: misc
+Priority: optional
+Maintainer: Tyler Weaver <maybe@tylerjw.dev>
+Build-Depends: debhelper (>= 9.0.0), libfmt-dev, librange-v3-dev, ros-kilted-ament-cmake-ros, ros-kilted-generate-parameter-library, ros-kilted-moveit-core, ros-kilted-moveit-resources-panda-moveit-config <!nocheck>, ros-kilted-pluginlib, ros-kilted-rclcpp, ros-kilted-rsl, ros-kilted-tf2-geometry-msgs, ros-kilted-tf2-kdl, ros-kilted-tl-expected, ros-kilted-ros-workspace
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-kilted-pick-ik
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libfmt-dev, librange-v3-dev, ros-kilted-generate-parameter-library, ros-kilted-moveit-core, ros-kilted-pluginlib, ros-kilted-rclcpp, ros-kilted-rsl, ros-kilted-tf2-geometry-msgs, ros-kilted-tf2-kdl, ros-kilted-tl-expected, ros-kilted-ros-workspace
+Description: Inverse Kinematics solver for MoveIt
