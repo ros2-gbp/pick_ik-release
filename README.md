@@ -1,3 +1,26 @@
+## pick_ik (kilted) - 1.1.2-1
+
+The packages in the `pick_ik` repository were released into the `kilted` distro by running `/usr/bin/bloom-release --non-interactive --rosdistro kilted --track kilted pick_ik` on `Fri, 26 Jun 2026 10:24:30 -0000`
+
+The `pick_ik` package was released.
+
+Version of package(s) in repository `pick_ik`:
+
+- upstream repository: https://github.com/PickNikRobotics/pick_ik.git
+- release repository: https://github.com/ros2-gbp/pick_ik-release.git
+- rosdistro version: `1.1.1-2`
+- old version: `1.1.1-2`
+- new version: `1.1.2-1`
+
+Versions of tools used:
+
+- bloom version: `0.14.3`
+- catkin_pkg version: `1.1.0`
+- rosdep version: `0.26.0`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## pick_ik (jazzy) - 1.1.2-1
 
 The packages in the `pick_ik` repository were released into the `jazzy` distro by running `/usr/bin/bloom-release --rosdistro jazzy --track jazzy pick_ik` on `Fri, 26 Jun 2026 10:22:46 -0000`
